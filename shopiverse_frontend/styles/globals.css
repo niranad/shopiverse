@@ -87,6 +87,16 @@ span.text-red {
   font-size: 18px;
 
 }
+
+.logo-text {
+  background-color: transparent;
+  color:#f02d34;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-shadow: 6px 6px 15px rgba(65, 42, 42, 0.4);
+  transform: rotateY(15deg);
+}
+
 .cart-icon{
   font-size: 25px;
   color: gray;

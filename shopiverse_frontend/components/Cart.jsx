@@ -22,24 +22,27 @@ export default function Cart() {
     setShowCart,
     onRemove,
     toggleCartItemQuantity,
+    paymentProcessing,
+    setPaymentProcessing
   } = useStateContext();
 
   const handleCheckout = async () => {
     const stripe = await getStripe();
     const response = await fetch('/api/stripe', {
-      method: 'POST', 
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(cartItems)
+      body: JSON.stringify(cartItems),
     });
 
     if (response.statusCode === 500) return;
 
     const data = await response.json();
     toast.loading('Redirecting...');
-    stripe.redirectToCheckout({ sessionId: data.id  })
-  }
+    stripe.redirectToCheckout({ sessionId: data.id });
+    setPaymentProcessing(false);
+  };
 
   return (
     <div className='cart-wrapper' ref={cartRef}>
@@ -107,7 +110,11 @@ export default function Cart() {
                       </p>
                     </div>
 
-                    <button type='button' className='remove-item' onClick={() => onRemove(item._id)}>
+                    <button
+                      type='button'
+                      className='remove-item'
+                      onClick={() => onRemove(item._id)}
+                    >
                       <TiDeleteOutline />
                     </button>
                   </div>
@@ -123,8 +130,16 @@ export default function Cart() {
               <h3>${totalPrice}</h3>
             </div>
             <div className='btn-container'>
-              <button type='button' className='btn' onClick={handleCheckout}>
-                Pay with Stripe
+              <button
+                type='button'
+                className='btn'
+                onClick={() => {
+                  setPaymentProcessing(true);
+                  handleCheckout();
+                }}
+                disabled={paymentProcessing}
+              >
+                {paymentProcessing ? 'Processing...' : 'Pay with Stripe'}
               </button>
             </div>
           </div>
@@ -133,4 +148,3 @@ export default function Cart() {
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 const Context = createContext();
@@ -9,6 +9,7 @@ export default function StateContext({ children }) {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   let foundProduct, productIndex;
 
@@ -41,8 +42,12 @@ export default function StateContext({ children }) {
     } else {
       product.quantity = quantity;
       setCartItems([...cartItems, product]);
-      setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + quantity);
-      setTotalPrice((prevTotalPrice) => prevTotalPrice + product.price * quantity);
+      setTotalQuantities(
+        (prevTotalQuantities) => prevTotalQuantities + quantity,
+      );
+      setTotalPrice(
+        (prevTotalPrice) => prevTotalPrice + product.price * quantity,
+      );
     }
 
     toast.success(`${qty} ${product.name} added to the cart.`);
@@ -51,10 +56,15 @@ export default function StateContext({ children }) {
   const onRemove = (id) => {
     foundProduct = cartItems.find((item) => item._id === id);
 
-    setTotalPrice((prevTotalPrice) => prevTotalPrice - (foundProduct.price * foundProduct.quantity));
-    setTotalQuantities((prevTotalQuantities) => prevTotalQuantities - foundProduct.quantity);
-    setCartItems(cartItems.filter((item) => item._id !== id))
-  }
+    setTotalPrice(
+      (prevTotalPrice) =>
+        prevTotalPrice - foundProduct.price * foundProduct.quantity,
+    );
+    setTotalQuantities(
+      (prevTotalQuantities) => prevTotalQuantities - foundProduct.quantity,
+    );
+    setCartItems(cartItems.filter((item) => item._id !== id));
+  };
 
   const toggleCartItemQuantity = (id, value) => {
     foundProduct = cartItems.find((item) => item._id === id);
@@ -68,7 +78,7 @@ export default function StateContext({ children }) {
           }
           return item;
         }),
-      ); 
+      );
       setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price);
       setTotalQuantities((prevTotalQuanties) => prevTotalQuanties + 1);
     } else if (value === 'dec') {
@@ -93,14 +103,19 @@ export default function StateContext({ children }) {
         showCart,
         setShowCart,
         cartItems,
+        setCartItems,
         totalPrice,
+        setTotalPrice,
         totalQuantities,
+        setTotalQuantities,
         toggleCartItemQuantity,
         qty,
         incQty,
         decQty,
         onAdd,
-        onRemove
+        onRemove,
+        paymentProcessing,
+        setPaymentProcessing,
       }}
     >
       {children}
@@ -109,5 +124,3 @@ export default function StateContext({ children }) {
 }
 
 export const useStateContext = () => useContext(Context);
-
-

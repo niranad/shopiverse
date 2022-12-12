@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { AiOutlineShopping } from 'react-icons/ai';
+import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { FaHome } from 'react-icons/fa';
 
 import Cart from './Cart';
@@ -12,11 +12,11 @@ export default function Navbar() {
   return (
     <div className='navbar-container'>
       <p className='logo'>
-        <Link href='/'><FaHome /></Link>
+        <Link href='/'><FaHome /> <span className='logo-text'>SHOPIVERSE</span></Link>
       </p>
 
       <button type='button' className='cart-icon' onClick={() => setShowCart((prevShowCart) => !prevShowCart)}>
-        <AiOutlineShopping />
+        <AiOutlineShoppingCart />
         <span className='cart-item-qty'>{totalQuantities}</span>
       </button>
 

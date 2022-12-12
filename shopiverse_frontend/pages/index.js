@@ -19,7 +19,7 @@ export default function Home({ products, banner }) {
         ))}
       </div>
 
-      <FooterBanner footerBanner={banner && banner[0]} />
+      <FooterBanner footerBanner={banner.length && banner[0]} />
     </div>
   );
 }

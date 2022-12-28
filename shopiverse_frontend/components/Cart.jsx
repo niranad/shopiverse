@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useStateContext } from '../context/StateContext';
 import { urlFor } from '../lib/client';
@@ -12,9 +12,8 @@ import { TiDeleteOutline } from 'react-icons/ti';
 import getStripe from '../lib/getStripe';
 import { toast } from 'react-hot-toast';
 
-
 export default function Cart() {
-  const cartRef = useRef();
+  const cartWrapRef = useRef();
   const {
     totalPrice,
     totalQuantities,
@@ -23,7 +22,7 @@ export default function Cart() {
     onRemove,
     toggleCartItemQuantity,
     paymentProcessing,
-    setPaymentProcessing
+    setPaymentProcessing,
   } = useStateContext();
 
   const handleCheckout = async () => {
@@ -45,12 +44,20 @@ export default function Cart() {
   };
 
   return (
-    <div className='cart-wrapper' ref={cartRef}>
-      <div className='cart-container'>
+    <div className='cart-wrapper' onClick={() => setShowCart(false)}>
+      <div
+        className='cart-container'
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <button
           type='button'
           className='cart-heading'
-          onClick={() => setShowCart(false)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowCart(false);
+          }}
         >
           <AiOutlineLeft />
           <span className='heading'>Your Cart</span>
@@ -65,7 +72,10 @@ export default function Cart() {
               <button
                 type='button'
                 className='btn'
-                onClick={() => setShowCart(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowCart(false);
+                }}
               >
                 Continue Shopping
               </button>
@@ -92,18 +102,20 @@ export default function Cart() {
                       <p className='quantity-desc'>
                         <span
                           className='minus'
-                          onClick={() =>
-                            toggleCartItemQuantity(item._id, 'dec')
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCartItemQuantity(item._id, 'dec');
+                          }}
                         >
                           <AiOutlineMinus />
                         </span>
                         <span className='num'>{item.quantity}</span>
                         <span
                           className='plus'
-                          onClick={() =>
-                            toggleCartItemQuantity(item._id, 'inc')
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCartItemQuantity(item._id, 'inc');
+                          }}
                         >
                           <AiOutlinePlus />
                         </span>
@@ -113,7 +125,10 @@ export default function Cart() {
                     <button
                       type='button'
                       className='remove-item'
-                      onClick={() => onRemove(item._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemove(item._id);
+                      }}
                     >
                       <TiDeleteOutline />
                     </button>
@@ -132,8 +147,9 @@ export default function Cart() {
             <div className='btn-container'>
               <button
                 type='button'
-                className='btn'
-                onClick={() => {
+                className={`btn${paymentProcessing ? ' btn-disabled' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
                   setPaymentProcessing(true);
                   handleCheckout();
                 }}
@@ -148,3 +164,4 @@ export default function Cart() {
     </div>
   );
 }
+

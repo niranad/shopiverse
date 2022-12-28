@@ -13,12 +13,19 @@ import { useStateContext } from '../../context/StateContext';
 export default function ProductDetails({ product, products }) {
   const { image, name, details, price } = product;
   const [index, setIndex] = useState(0);
-  const { decQty, incQty, qty, onAdd, cartItems, setShowCart } = useStateContext();
+  const { decQty, incQty, qty, onAdd, lastAddedProd, setShowCart } =
+    useStateContext();
 
   const handleBuyNow = () => {
-    onAdd(product, qty);
+    if (
+      !lastAddedProd ||
+      lastAddedProd.id !== product._id ||
+      lastAddedProd.quantity !== qty
+    ) {
+      onAdd(product, qty);
+    }
     setShowCart(true);
-  }
+  };
 
   return (
     <div>
@@ -131,4 +138,7 @@ export const getStaticProps = async ({ params: { slug } }) => {
     props: { product, products },
   };
 };
+
+
+
 

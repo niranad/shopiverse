@@ -10,6 +10,7 @@ export default function StateContext({ children }) {
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [lastAddedProd, setLastAddedProd] = useState(null);
 
   let foundProduct, productIndex;
 
@@ -31,11 +32,13 @@ export default function StateContext({ children }) {
       setTotalQuantities((prevTotalQuanties) => prevTotalQuanties + quantity);
 
       const updatedCartItems = cartItems.map((cartProduct) => {
-        if (cartProduct._id === product._id)
+        if (cartProduct._id === product._id) {
           return {
             ...cartProduct,
             quantity: cartProduct.quantity + quantity,
           };
+        }
+        return cartProduct;
       });
 
       setCartItems(updatedCartItems);
@@ -50,6 +53,7 @@ export default function StateContext({ children }) {
       );
     }
 
+    setLastAddedProd({ id: product._id, quantity });
     toast.success(`${qty} ${product.name} added to the cart.`);
   };
 
@@ -64,6 +68,11 @@ export default function StateContext({ children }) {
       (prevTotalQuantities) => prevTotalQuantities - foundProduct.quantity,
     );
     setCartItems(cartItems.filter((item) => item._id !== id));
+
+    setLastAddedProd((prod) => {
+      if (prod.id === id) return null;
+      return prod;
+    });
   };
 
   const toggleCartItemQuantity = (id, value) => {
@@ -107,6 +116,7 @@ export default function StateContext({ children }) {
         totalPrice,
         setTotalPrice,
         totalQuantities,
+        lastAddedProd,
         setTotalQuantities,
         toggleCartItemQuantity,
         qty,
@@ -124,3 +134,5 @@ export default function StateContext({ children }) {
 }
 
 export const useStateContext = () => useContext(Context);
+
+
